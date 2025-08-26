@@ -1,16 +1,30 @@
 package com.mycompany.SensorTemperatura;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 public class SensorTemperatura {
 
     public static void main(String[] args) {
-
-        HiloSensado sensor = new HiloSensado();
-        sensor.start();
+        InetAddress ipServidor = null;
+        PrintWriter pw;
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
+            ipServidor = InetAddress.getByName("localhost");
+            Socket cliente = new Socket(ipServidor, 20000);
+            System.out.println(cliente);
+            pw = new PrintWriter(cliente.getOutputStream());
+            pw.println("temperatura");
+            HiloSensado sensor = new HiloSensado(cliente, pw);
+            sensor.start();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        sensor.apagar();
+
+
     }
 }

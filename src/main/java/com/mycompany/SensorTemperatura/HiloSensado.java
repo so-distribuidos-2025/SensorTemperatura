@@ -1,21 +1,35 @@
 package com.mycompany.SensorTemperatura;
+import java.io.PrintWriter;
 import java.lang.Math;
+import java.net.Socket;
 
 public class HiloSensado extends Thread {
     private boolean on;
     private float temperatura;
+    private Socket cnxServidor;
+    PrintWriter pw;
 
-    public HiloSensado() {
+    public HiloSensado(Socket s, PrintWriter pw) {
         this.on = true;
-        this.temperatura = 0;
+        this.temperatura = 40;
+        this.cnxServidor = s;
+        this.pw = pw;
     }
 
     public float getTemperatura() {
         return temperatura;
     }
 
-    private float generarTemperatura() {
-        return (float) (Math.random() * 125 - 40); // TODO buscar mejor forma de simular esto
+    private void generarTemperatura() {
+        float cambio = (float) (Math.random() * 20 - 10);
+        temperatura += cambio;
+        if (temperatura > 125){
+            temperatura = 125;
+        }
+        if (temperatura < -40){
+            temperatura = -40;
+        }
+        Math.random();
     }
 
     public void encender() {
@@ -28,8 +42,8 @@ public class HiloSensado extends Thread {
 
     public void run() {
         while (on) {
-            temperatura = generarTemperatura();
-            System.out.println("Temperatura actual: " + temperatura + " °C");
+            generarTemperatura();
+            pw.println(this.temperatura);
 
             try {
                 Thread.sleep(1000);
