@@ -15,7 +15,7 @@ public class SensorTemperatura {
             ipServidor = InetAddress.getByName("localhost");
             Socket cliente = new Socket(ipServidor, 20000);
             System.out.println(cliente);
-            pw = new PrintWriter(cliente.getOutputStream());
+            pw = new PrintWriter(cliente.getOutputStream(), true); //El segundo parametro activa el autoflush para escribir en el buffer
             pw.println("temperatura");
             HiloSensado sensor = new HiloSensado(cliente, pw);
             sensor.start();

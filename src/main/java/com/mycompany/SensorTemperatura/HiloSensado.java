@@ -44,6 +44,7 @@ public class HiloSensado extends Thread {
         while (on) {
             generarTemperatura();
             pw.println(this.temperatura);
+            System.out.println(temperatura);
 
             try {
                 Thread.sleep(1000);
