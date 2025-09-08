@@ -1,11 +1,12 @@
 package com.mycompany.SensorTemperatura;
+
 import java.io.PrintWriter;
 import java.lang.Math;
 import java.net.Socket;
 
 public class HiloSensado extends Thread {
     private boolean on;
-    private float temperatura;
+    private double temperatura;
     private Socket cnxServidor;
     PrintWriter pw;
 
@@ -16,17 +17,17 @@ public class HiloSensado extends Thread {
         this.pw = pw;
     }
 
-    public float getTemperatura() {
+    public double getTemperatura() {
         return temperatura;
     }
 
     private void generarTemperatura() {
-        float cambio = (float) (Math.random() * 20 - 10);
+        double cambio = (double) (Math.random() * 20 - 10);
         temperatura += cambio;
-        if (temperatura > 125){
+        if (temperatura > 125) {
             temperatura = 125;
         }
-        if (temperatura < -40){
+        if (temperatura < -40) {
             temperatura = -40;
         }
         Math.random();
