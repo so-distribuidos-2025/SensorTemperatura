@@ -26,7 +26,7 @@ public class SensorTemperatura {
      * @param args Argumentos de línea de comando (no utilizados).
      */
     public static void main(String[] args) {
-        InetAddress ipServidor = null;   // Dirección IP del servidor
+        InetAddress ipServidor;   // Dirección IP del servidor
         PrintWriter pw;                  // Flujo de salida para enviar datos
 
         try {

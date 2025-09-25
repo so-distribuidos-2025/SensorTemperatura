@@ -2,6 +2,8 @@ package com.mycompany.SensorTemperatura;
 
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Clase HiloSensado
@@ -96,7 +98,7 @@ public class HiloSensado extends Thread {
         while (on) {
             generarTemperatura();              // Genera un nuevo valor
             pw.println(this.temperatura);      // Envía al servidor
-            System.out.println(temperatura);   // Muestra en consola
+            System.out.println(getTiempo() + " | Valor medido: " + temperatura);   // Muestra en consola
 
             try {
                 Thread.sleep(1000); // Pausa de 1 segundo
@@ -104,5 +106,11 @@ public class HiloSensado extends Thread {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private String getTiempo(){
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return myDateObj.format(myFormatObj);
     }
 }
