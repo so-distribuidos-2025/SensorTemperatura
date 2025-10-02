@@ -1,7 +1,10 @@
 package com.mycompany.SensorTemperatura;
 
+import com.mycompany.SensorTemperatura.interfaces.ISensorRMI;
+
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.rmi.RemoteException;
 
 /**
  * Clase HiloSensado
@@ -16,7 +19,7 @@ import java.net.Socket;
  *  - Envía periódicamente los valores al servidor usando PrintWriter.
  *  - Permite encender y apagar el sensor.
  */
-public class HiloSensado extends Thread {
+public class HiloSensado extends Thread implements ISensorRMI {
     
     // Indica si el sensor está encendido o apagado
     private boolean on;
@@ -29,6 +32,10 @@ public class HiloSensado extends Thread {
 
     // Flujo de salida para enviar los valores de temperatura
     private PrintWriter pw;
+
+    // Bandera para saber si el sensor esta en modo manual o automatico
+    private boolean isAuto = true;
+
 
     /**
      * Constructor de la clase HiloSensado.
@@ -94,7 +101,9 @@ public class HiloSensado extends Thread {
     @Override
     public void run() {
         while (on) {
-            generarTemperatura();              // Genera un nuevo valor
+            if (isAuto) {
+            generarTemperatura();           // Genera un nuevo valor si esta en automatico
+            }
             pw.println(this.temperatura);      // Envía al servidor
             System.out.println(temperatura);   // Muestra en consola
 
@@ -104,5 +113,15 @@ public class HiloSensado extends Thread {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    @Override
+    public void setValor(double valor) throws RemoteException {
+        this.temperatura = valor;
+    }
+
+    @Override
+    public void setAuto(boolean auto) throws RemoteException {
+        this.isAuto = auto;
     }
 }

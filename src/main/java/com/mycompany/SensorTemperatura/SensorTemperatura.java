@@ -1,10 +1,18 @@
 package com.mycompany.SensorTemperatura;
 
+import com.mycompany.SensorTemperatura.interfaces.ISensorRMI;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Clase principal SensorTemperatura
@@ -45,7 +53,29 @@ public class SensorTemperatura {
 
             // Crea e inicia el hilo que simula el sensor de temperatura
             HiloSensado sensor = new HiloSensado(cliente, pw);
+
+            int port = 22000;
+            String name = "SensorTemperaturaRMI";
             sensor.start();
+
+            //Clase unicast para mandar los datos
+            HiloServerRMI hiloServerRMI = new HiloServerRMI(sensor);
+
+            try {
+                // Crea el registro RMI en el puerto calculado
+                LocateRegistry.createRegistry(port);
+
+                // Publica el servidor remoto en el registro
+                Naming.rebind("rmi://localhost:"+port+"/"+name, hiloServerRMI);
+
+            } catch (RemoteException ex) {
+                Logger.getLogger(HiloServerRMI.class.getName()).log(Level.SEVERE,
+                        "Error al iniciar el servidor RMI", ex);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(HiloServerRMI.class.getName()).log(Level.SEVERE,
+                        "URL mal formada para el servidor RMI", ex);
+            }
+
 
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
